@@ -32,8 +32,8 @@ if __name__ == '__main__':
                                 print()
                         case '2':
                             test1 = my_Predicate.Sentences('test1.txt')
-                            # test1.resolution()
-                            # test1.reindex()
+                            test1.resolution()
+                            test1.reindex()
                             print()
                         case '0':
                             print()
