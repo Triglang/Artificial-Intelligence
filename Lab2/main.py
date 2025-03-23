@@ -1,6 +1,5 @@
 import my_Predicate
 
-
 def show_menu1():
     print('选择运行案例：')
     print('1：运行案例1')
@@ -32,8 +31,8 @@ if __name__ == '__main__':
                                 print()
                         case '2':
                             test1 = my_Predicate.Sentences('test1.txt')
-                            # test1.resolution()
-                            # test1.reindex()
+                            test1.resolution()
+                            test1.reindex()
                             print()
                         case '0':
                             print()
@@ -50,8 +49,8 @@ if __name__ == '__main__':
                                 print()
                         case '2':
                             test1 = my_Predicate.Sentences('test2.txt')
-                            # test1.resolution()
-                            # test1.reindex()
+                            test1.resolution()
+                            test1.reindex()
                             print()
                         case '0':
                             print()
@@ -68,8 +67,8 @@ if __name__ == '__main__':
                                 print()
                         case '2':
                             test1 = my_Predicate.Sentences('test3.txt')
-                            # test1.resolution()
-                            # test1.reindex()
+                            test1.resolution()
+                            test1.reindex()
                             print()
                         case '0':
                             print()
