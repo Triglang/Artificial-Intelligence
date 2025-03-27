@@ -135,10 +135,12 @@ class Sentences:
         string += str(newclause)
         return string
     
+    # 支持集策略下的归结推理
     def resolution(self):
         clauseset = self.clauses
         clauseset = list(OrderedDict.fromkeys(clauseset))       # 去重
         step = ['归结顺序:'] + self.clauses      #将0位置补充元素，确保编号和列表索引对应
+        supportset = [clauseset[-1]]
         while True:
             clauseset_len = len(clauseset)
             new_clauseset = []
@@ -150,6 +152,8 @@ class Sentences:
                     clause2 = clauseset[clause2_index]
                     clause1_len = len(clause1)
                     clause2_len = len(clause2)
+                    if clause1 not in supportset and clause2 not in supportset:
+                        continue
                     for literal1_index in range(clause1_len):
                         for literal2_index in range(clause2_len):
                             literal1 = clause1[literal1_index]
@@ -172,6 +176,8 @@ class Sentences:
                                 # 最一般合一替换
                                 newclause1 = self.substitute(unification, clause1)
                                 newclause2 = self.substitute(unification, clause2)
+                                
+                                # 归结
                                 newclause =  self.resolve(newclause1, newclause2, literal1_index, literal2_index)
                                 
                                 # 检查是否为新子句
@@ -194,6 +200,7 @@ class Sentences:
                         literal1_index += 1
             if new_clauseset:
                 clauseset += new_clauseset
+                supportset += new_clauseset
             else:
                 return False
 
@@ -261,6 +268,9 @@ class Sentences:
         return useful_process
 
     def reindex(self):
+        if DEBUG:
+            for item in self.step:
+                print(item)
         new_result = self.Simplify(self.step,len(self.clauses))        
         print(new_result[0])
         for i in range(1,len(new_result)):
