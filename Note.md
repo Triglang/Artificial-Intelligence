@@ -203,3 +203,76 @@
 
     - 尽量避免在可满足的子句集中做归结，因为从中导不出空子句。而求证公式的前提通常是一致的，所以支持集策略要求归结时从目标公式否定的子句出发进行归结。支持集策略实际是一种目标制导的反向推理。
     - 支持集策略是完备的。
+
+****
+
+#### 归结推理的完备性证明
+
+$\text{S is unsatisfiable} \Rightarrow S \vdash ()$
+
+证明：（数学归纳法）
+
+定义 $P(i)$ 表示：当 S 中含有 $i$ 个 literals 时，$\text{S 不可满足} \Rightarrow S \vdash ()$
+
+1. 当 $i = 1$ 时，P(1) 是成立的。
+
+   当 S 是含有 1 个 literal 的子句集时，不妨设含有的 literal 为 P
+
+   $\because$ S 不可满足
+
+   $\therefore$ S 只可能为 ${(P), (¬P)}$
+
+   $\because$ $(P)$ 与 $(¬P)$ 可归结出 $()$
+
+   $\therefore$ $S \vdash ()$
+
+2. 假设：对于 $1 \le i \le k$，$P(i)$ 都成立
+
+   $\because$ S 是含有 $k+1$ 个文字的子句集合，且 S 不可满足。
+
+   从 S 中选取任意 literal，设选取的 literal 为 P。将 S 分为下列 3 个集合：
+
+   * $S_p$：所有含有 P 的子句集
+   * $S_{(\neg P)}$：所有含有 $\neg P$ 的子句集
+   * $R$：所有不含 $P$ 或 $\neg P$ 的子句集
+
+   $\therefore$ $R$ 是含有 $k$ 个 literal 的 S 的子句集
+
+   情形 1：若 $R$ 不可满足
+
+   $\because$ $P(k)$ 成立。
+
+   $\therefore R \vdash ()$
+
+   $\because R \subseteq S$
+
+   $\therefore S \vdash ()$，即 $P(k + 1)$ 成立
+
+   情形 2：若 R 可满足，即存在解释 $\widetilde{S}$ 使得 R 中的子句全为真。
+
+   $\because$ S 整体不可满足
+
+   $\therefore S_p, S_{(\neg P)}$ 中存在子句使得任意解释下都不满足
+
+   * 若 $S_p$ 为空集，则取解释 $\widetilde{S}$ 并加上 $P$ 的取值为假，$S$ 便可满足。
+   * 若 $S_{(\neg P)}$ 为空集，则取解释 $\widetilde{S}$ 并加上 $P$ 的取值为真，$S$ 便可满足。
+
+   $\therefore S_p, S_{(\neg P)}$ 均不能为空集
+
+   $\therefore$ 存在子句 $(P, \alpha)$ 和 $(\neg P, \beta)$ 使得 $P$ 无论取何值，$S$ 都不可满足。这里 $\alpha$ 和 $\beta$ 表示子句中其它不是 $P$ 的 literal
+
+   $\because$ $(P, \alpha)$ 和 $(\neg P, \beta)$ 不论 $P$ 取何值均不能同时满足
+
+   $\therefore$ 在 $\widetilde{S}$ 解释下，$\alpha$ 为假，$\beta$ 为假
+
+   $\because$ $(P, \alpha)$ 和 $(\neg P, \beta)$ 可归结出 $(\alpha, \beta)$，而 $(\alpha, \beta)$ 在解释 $\widetilde{S}$ 下无法满足。令 $ R' = \{\alpha, \beta\} \cup R $
+
+   $\therefore$ $ R' $ 无法满足，且只含有 $ k $ 个 literal
+
+   $\because$ $ P(k) $ 成立
+
+   $\therefore R' \vdash ( ) $，即 $ R' $ 中存在子句可归结出 ( )
+
+   $\because R'$ 中的子句是属于 $ S $ 或由 $ S $ 中子句归结得到
+
+   $\therefore S \vdash ()$ 即 $ P(k+1) $ 成立

@@ -1,17 +1,20 @@
 from collections import OrderedDict
 
-DEBUG = 0
+DEBUG = 0       # 调试模式开关
 
 class Sentences:
     def __init__(self, path):
-        self.clauses = []
-        self.step = []
+        self.clauses = []       # 存储所有子句
+        self.step = []          # 存储归结步骤记录
         with open(path, 'r') as f:
             lines = [line.strip() for line in f]
             
         for line in lines:
+            # 跳过空行和标题行
             if not line or line.lower() == "kb:" or line.lower() == "query:":
                 continue
+            
+            # 分隔文字
             if line.startswith('(') and line.endswith(')'):
                 line = line[1: -1]
             line = line[:-1]
@@ -21,11 +24,12 @@ class Sentences:
                 literals.append(lit.replace(" ", "") + ")")
             self.clauses.append(tuple(literals))
         
-        if DEBUG:
+        if DEBUG:   # 调试输出
             for item in self.clauses:
                 print(item)
             print(self.clauses)
             
+    """检查两个文字是否为互补对"""
     def is_complement(self, literal1, literal2):
         # if DEBUG:
         #     print("literal1 and literal2: ", type(literal1), type(literal2))
@@ -38,17 +42,21 @@ class Sentences:
         
         return False
     
+    """判断是否为变量"""
     def is_variable(self, val):
         return isinstance(val, str) and val.islower() and len(val) == 1
     
+    """判断是否为常量（小写多字母）"""
     def is_constant(self, val):
         return isinstance(val, str) and len(val) >= 2 and val.islower()
     
+    """从文字中提取参数列表"""
     def get_arguments(self, literal):
         begin = literal.find('(')
         end = literal.find(')')
         return literal[begin + 1:end].split(',')
     
+    """计算最一般合一"""
     def mgu(self, literal1, literal2):
         args1 = self.get_arguments(literal1)
         args2 = self.get_arguments(literal2)
@@ -76,6 +84,7 @@ class Sentences:
                     return None
                 elif self.is_variable(val1) and self.is_constant(val2):
                     unification[val1] = val2
+                    # 应用替换到整个参数列表
                     args1 = [unification[val] if val in unification else val for val in args1]
                     args2 = [unification[val] if val in unification else val for val in args2]
                 elif self.is_constant(val1) and self.is_variable(val2):
@@ -83,6 +92,8 @@ class Sentences:
                     args1 = [unification[val] if val in unification else val for val in args1]
                     args2 = [unification[val] if val in unification else val for val in args2]
                     
+
+    """应用合一替换到子句"""
     def substitute(self, unification, clause):
         newclause = []
         for literal in clause:
@@ -94,6 +105,7 @@ class Sentences:
             newclause.append(newliteral)
         return tuple(newclause)
     
+    """执行归结操作"""
     def resolve(self, clause1, clause2, literal1_index, literal2_index):
         newclause = list(clause1 + clause2)
         newclause.remove(clause1[literal1_index])
@@ -109,6 +121,7 @@ class Sentences:
             index = str(clause_index+1) + chr(ord('a')+literal_index)
         return index
     
+    """生成文字索引标识"""
     def sequence(self, newclause,unification,index1,index2):
         string = ''
         if unification == {}:    #如果字典为空，说明不需要输出合一
@@ -122,46 +135,64 @@ class Sentences:
         string += str(newclause)
         return string
     
+    # 支持集策略下的归结推理
     def resolution(self):
         clauseset = self.clauses
-        clauseset = list(OrderedDict.fromkeys(clauseset))
+        clauseset = list(OrderedDict.fromkeys(clauseset))       # 去重
         step = ['归结顺序:'] + self.clauses      #将0位置补充元素，确保编号和列表索引对应
+        supportset = [clauseset[-1]]
         while True:
             clauseset_len = len(clauseset)
             new_clauseset = []
+            
+            # 遍历子句集
             for clause1_index in range(clauseset_len):
                 for clause2_index in range (clause1_index + 1, clauseset_len):
                     clause1 = clauseset[clause1_index]
                     clause2 = clauseset[clause2_index]
                     clause1_len = len(clause1)
                     clause2_len = len(clause2)
+                    if clause1 not in supportset and clause2 not in supportset:
+                        continue
                     for literal1_index in range(clause1_len):
                         for literal2_index in range(clause2_len):
                             literal1 = clause1[literal1_index]
                             literal2 = clause2[literal2_index]
-                    
+
+                            # 判断是否为互补对
                             if self.is_complement(literal1, literal2):
                                 if DEBUG:
                                     print(literal1, literal2, "is complement")
+                                    
+                                # 最一般合一项
                                 unification = self.mgu(literal1, literal2)
                                 if unification == None:
                                     break
-                                if DEBUG:
+                                if DEBUG:   # 未实现功能：若违法，则跳出循环
                                     if unification == False:
                                         print("谓词的参数个数必须相同")
+                                        return False
+                                
+                                # 最一般合一替换
                                 newclause1 = self.substitute(unification, clause1)
                                 newclause2 = self.substitute(unification, clause2)
+                                
+                                # 归结
                                 newclause =  self.resolve(newclause1, newclause2, literal1_index, literal2_index)
+                                
+                                # 检查是否为新子句
                                 if newclause in clauseset or newclause in new_clauseset:
                                     break
                                 new_clauseset.append(newclause)
                                 
+                                # 记录步骤
                                 index1 = self.index(literal1_index, clause1_index, clause1_len)
                                 index2 = self.index(literal2_index, clause2_index, clause2_len)
                                 sequence = self.sequence(newclause, unification, index1, index2)
                                 
                                 step.append(sequence)
                                 
+                                # 发现空子句则成功
                                 if newclause == ():
                                     self.step = step
                                     return
@@ -169,6 +200,7 @@ class Sentences:
                         literal1_index += 1
             if new_clauseset:
                 clauseset += new_clauseset
+                supportset += new_clauseset
             else:
                 return False
 
@@ -236,6 +268,9 @@ class Sentences:
         return useful_process
 
     def reindex(self):
+        if DEBUG:
+            for item in self.step:
+                print(item)
         new_result = self.Simplify(self.step,len(self.clauses))        
         print(new_result[0])
         for i in range(1,len(new_result)):
