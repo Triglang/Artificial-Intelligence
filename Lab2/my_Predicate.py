@@ -50,10 +50,18 @@ class Sentences:
     def is_constant(self, val):
         return isinstance(val, str) and len(val) >= 2 and val.islower()
     
+    """判断是否为谓词（大写字母开头）"""
+    def is_predicate(self, val):
+        return val[0].isupper()
+    
+    """判断是否是项"""
+    def is_item(self, val):
+        return self.is_constant(val) or self.is_predicate(val)
+    
     """从文字中提取参数列表"""
     def get_arguments(self, literal):
         begin = literal.find('(')
-        end = literal.find(')')
+        end = literal.rfind(')')
         return literal[begin + 1:end].split(',')
     
     """计算最一般合一"""
@@ -80,14 +88,14 @@ class Sentences:
                 val2 = args2[i]
                 if self.is_variable(val1) and self.is_variable(val2):
                     return None
-                elif self.is_constant(val1) and self.is_constant(val2) and val1 != val2:
+                elif self.is_item(val1) and self.is_item(val2) and val1 != val2:
                     return None
-                elif self.is_variable(val1) and self.is_constant(val2):
+                elif self.is_variable(val1) and self.is_item(val2):
                     unification[val1] = val2
                     # 应用替换到整个参数列表
                     args1 = [unification[val] if val in unification else val for val in args1]
                     args2 = [unification[val] if val in unification else val for val in args2]
-                elif self.is_constant(val1) and self.is_variable(val2):
+                elif self.is_item(val1) and self.is_variable(val2):
                     unification[val2] = val1
                     args1 = [unification[val] if val in unification else val for val in args1]
                     args2 = [unification[val] if val in unification else val for val in args2]
