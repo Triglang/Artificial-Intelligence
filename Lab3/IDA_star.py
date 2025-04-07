@@ -111,14 +111,14 @@ def IDA_star(start_state, goal_state):
         
         while frontier:
             _, current = frontier.pop(0)
-            
+                        
             if current == goal_state:
                 return reconstruct_path(came_from, current)
             
             new_frontier = []
             
             for neighbor, move in generate_children(current):
-                if neighbor not in f:              # 环检查
+                if neighbor not in g or g[current] + 1 < g[neighbor]:
                     g[neighbor] = g[current] + 1
                     h[neighbor] = manhattan_distance(neighbor)
                     f[neighbor] = g[neighbor] + h[neighbor]
@@ -132,8 +132,7 @@ def IDA_star(start_state, goal_state):
             new_frontier.sort()
             frontier = new_frontier + frontier
         
-        # f_limit = min_exceeded_f
-        f_limit += 1
+        f_limit = min_exceeded_f
         if DEBUG:
             print(f"f_limit = {f_limit}")
 

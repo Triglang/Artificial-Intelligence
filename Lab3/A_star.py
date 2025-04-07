@@ -93,24 +93,27 @@ def A_star(start_state, goal_state):
         if DEBUG:
             print(f"frontier.qsiez: {frontier.qsize()}")
             
-        current_f, current = frontier.get()
+        _, current = frontier.get()
+
+        """
+        1. 若当前的g值小于用于队列中排序的g值，说明这个节点已经过时
+        2. 若当前节点已经在close集中，不需要重复处理
+        """
+        # 若当前节点已经在close集中，说明该节点g值更小的路径已经被拓展，不需要重复处理
         if current in close:
             continue
+        
         close.add(current)
         
         if current == goal_state:
             return reconstruct_path(came_from, current)
         
-        # 若当前的g值小于用于队列中排序的g值，说明这个节点已经过时
-        if g[current] < current_f - h[current]:
-            continue
-        
         for neighbor, move in generate_children(current):
             """
-            1. 环检查
-            2. 若孩子节点已经在边界中（但是仍未被扩展，必须保证该孩子的g值为最优值）
+            1. 不需要进行环检测。或者说，利用g值是否更优进行环检测
+            2. 如果新路径不比旧路径好，就跳过
             """
-            if neighbor not in close and not (neighbor in g and g[current] + 1 >= g[neighbor]):
+            if neighbor not in g or g[current] + 1 < g[neighbor]:
                 came_from[neighbor] = (current, move)
                 g[neighbor] = g[current] + 1
                 h[neighbor] = heuristic(neighbor)
