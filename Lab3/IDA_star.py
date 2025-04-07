@@ -98,8 +98,9 @@ def out_file(path, start_state, solution, duration, peak_mem):
 
 def IDA_star(start_state, goal_state):
     """IDA* search algorithm implementation for 15-puzzle solving."""
-    f_limit = 1
+    f_limit = manhattan_distance(start_state)
     while True:
+        min_exceeded_f = float("inf")
         frontier = []
         came_from = {start_state: None}      # Key: child state, Value: (parent state, move)
         g = {start_state: 0}
@@ -121,6 +122,8 @@ def IDA_star(start_state, goal_state):
                     g[neighbor] = g[current] + 1
                     h[neighbor] = manhattan_distance(neighbor)
                     f[neighbor] = g[neighbor] + h[neighbor]
+                    if f[neighbor] > f_limit:
+                        min_exceeded_f = min(min_exceeded_f, f[neighbor])
                     
                     if (f[neighbor] <= f_limit):
                         came_from[neighbor] = (current, move)
@@ -129,7 +132,10 @@ def IDA_star(start_state, goal_state):
             new_frontier.sort()
             frontier = new_frontier + frontier
         
-        f_limit += 1    
+        # f_limit = min_exceeded_f
+        f_limit += 1
+        if DEBUG:
+            print(f"f_limit = {f_limit}")
 
 if __name__ == "__main__":
     test_cases = [

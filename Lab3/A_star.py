@@ -75,13 +75,17 @@ def reconstruct_path(came_from, end_state):
     path.append((current_state, None))  # Initial state
     return path[::-1]  # Reverse to show start-to-end    
 
+heuristic = manhattan_distance
+
 def A_star(start_state, goal_state):
     """A* search algorithm implementation for 15-puzzle solving."""
     frontier = PriorityQueue()
     came_from = {start_state: None}      # Key: child state, Value: (parent state, move)
     g = {start_state: 0}
-    h = {start_state: manhattan_distance(start_state)}
+    h = {start_state: heuristic(start_state)}
     f = {start_state: g[start_state] + h[start_state]}
+    
+    close = set()
     
     frontier.put((f[start_state], start_state))
        
@@ -89,16 +93,27 @@ def A_star(start_state, goal_state):
         if DEBUG:
             print(f"frontier.qsiez: {frontier.qsize()}")
             
-        _, current = frontier.get()
+        current_f, current = frontier.get()
+        if current in close:
+            continue
+        close.add(current)
         
         if current == goal_state:
             return reconstruct_path(came_from, current)
         
+        # 若当前的g值小于用于队列中排序的g值，说明这个节点已经过时
+        if g[current] < current_f - h[current]:
+            continue
+        
         for neighbor, move in generate_children(current):
-            if neighbor not in came_from:              # 环检查
+            """
+            1. 环检查
+            2. 若孩子节点已经在边界中（但是仍未被扩展，必须保证该孩子的g值为最优值）
+            """
+            if neighbor not in close and not (neighbor in g and g[current] + 1 >= g[neighbor]):
                 came_from[neighbor] = (current, move)
                 g[neighbor] = g[current] + 1
-                h[neighbor] = manhattan_distance(neighbor)
+                h[neighbor] = heuristic(neighbor)
                 f[neighbor] = g[neighbor] + h[neighbor]
                 frontier.put((f[neighbor], neighbor))
     

@@ -109,6 +109,6 @@ def random_test():
         out_file(file, start_state, solution, duration, peak_mem)
 
 if __name__ == "__main__":
-    easy_test()
+    # easy_test()
     difficult_test()
-    random_test()
+    # random_test()
