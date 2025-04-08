@@ -31,6 +31,15 @@ def print_state(state):
         output.append(' '.join(f"{num:<5}" for num in state[i:i + 4]))
     return '\n'.join(output)
 
+def misplaced(state):
+    sum = 0
+    for i in range(16):
+        if state[i] == 0:
+            continue
+        if state[i] - 1 != i:
+            sum += 1
+    return sum
+
 def manhattan_distance(state):
     """Calculate Manhattan distance heuristic for A* algorithm."""
     distance = 0
@@ -43,6 +52,45 @@ def manhattan_distance(state):
         current_col = i % 4
         distance += abs(target_row - current_row) + abs(target_col - current_col)
     return distance       
+
+target = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0]  # 目标状态
+# 构建目标位置字典：{数字: 目标索引}
+target_pos = {num: idx for idx, num in enumerate(target)}
+def inversion_heuristic(state):
+    """
+    计算相邻颠倒对的启发式值（固定步数=2/对）
+    :param state: 当前状态，长度为16的元组（0表示空白块）
+    :return: 启发式值
+    """
+    
+    inversion_count = 0
+    
+    # 遍历所有相邻对（横向和纵向）
+    for i in range(16):
+        current_num = state[i]
+        if current_num == 0:
+            continue  # 忽略空白块
+        
+        # 检查右侧横向邻居
+        if (i % 4) < 3:  # 非最右列
+            right_neighbor = state[i + 1]
+            if right_neighbor != 0:
+                # 判断是否颠倒
+                if target_pos[current_num] == i + 1 and target_pos[right_neighbor] == i:
+                    inversion_count += 1
+        
+        # 检查下方纵向邻居
+        if i < 12:  # 非最下行
+            down_neighbor = state[i + 4]
+            if down_neighbor != 0:
+                # 判断是否颠倒：current_num在目标中的位置应在下方邻居上方
+                if target_pos[current_num] == i + 4 and target_pos[down_neighbor] == i:
+                    inversion_count += 1
+    
+    return inversion_count * 2  # 每对颠倒增加2步
+
+def manhattan_reversed_position(state):
+    return manhattan_distance(state) + inversion_heuristic(state)       
 
 def generate_children(state):
     """Generate valid child states through possible blank tile moves."""
@@ -75,7 +123,7 @@ def reconstruct_path(came_from, end_state):
     path.append((current_state, None))  # Initial state
     return path[::-1]  # Reverse to show start-to-end    
 
-heuristic = manhattan_distance
+heuristic = manhattan_reversed_position
 
 def A_star(start_state, goal_state):
     """A* search algorithm implementation for 15-puzzle solving."""
