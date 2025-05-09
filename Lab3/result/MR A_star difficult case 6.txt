@@ -314,5 +314,5 @@
 9     10    11    12   
 13    14    15    0    
 
-Time: 2439.8853 s
-Peak Memory: 24093703.96 KB
+Time: 1864.7039 s
+Peak Memory: 24093703.78 KB

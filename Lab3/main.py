@@ -2,6 +2,7 @@ from A_star import A_star
 from A_star import out_file
 from A_star import generate_random_puzzle
 from IDA_star import IDA_star
+import show_result
 
 import time
 import tracemalloc
@@ -24,21 +25,24 @@ def easy_test():
         current_mem, peak_mem = tracemalloc.get_traced_memory()
         tracemalloc.stop()
         # ----------计时区结束----------
-        file = "MR A_star easy case " + str(idx + 1) + ".txt"
+        file = "A_star easy case " + str(idx + 1) + ".txt"
         out_file(file, start_state, solution, duration, peak_mem)
+        visualizer = show_result.PuzzleVisualizer(solution,  "A_star easy case " + str(idx + 1) + ".gif")
+        visualizer.run()
+        
         
     # ----------IDA*搜索正确性测试----------
-    for idx, start_state in enumerate(easy_cases):
-        # ----------计时区开始----------
-        tracemalloc.start()
-        start_time = time.perf_counter()
-        solution = IDA_star(start_state, goal_state)
-        duration = time.perf_counter() - start_time
-        current_mem, peak_mem = tracemalloc.get_traced_memory()
-        tracemalloc.stop()
-        # ----------计时区结束----------
-        file = "MR IDA_star easy case " + str(idx + 1) + ".txt"
-        out_file(file, start_state, solution, duration, peak_mem)
+    # for idx, start_state in enumerate(easy_cases):
+    #     # ----------计时区开始----------
+    #     tracemalloc.start()
+    #     start_time = time.perf_counter()
+    #     solution = IDA_star(start_state, goal_state)
+    #     duration = time.perf_counter() - start_time
+    #     current_mem, peak_mem = tracemalloc.get_traced_memory()
+    #     tracemalloc.stop()
+    #     # ----------计时区结束----------
+    #     file = "IDA_star easy case " + str(idx + 1) + ".txt"
+    #     out_file(file, start_state, solution, duration, peak_mem)
         
 def difficult_test():
     # ----------困难测例测试----------
@@ -63,8 +67,11 @@ def difficult_test():
         current_mem, peak_mem = tracemalloc.get_traced_memory()
         tracemalloc.stop()
         # ----------计时区结束----------
-        file = "MR A_star difficult case " + str(idx + 1) + ".txt"
+        file = "A_star difficult case " + str(idx + 1) + ".txt"
         out_file(file, start_state, solution, duration, peak_mem)
+        visualizer = show_result.PuzzleVisualizer(solution,  "A_star difficult case " + str(idx + 1) + ".gif")
+        visualizer.run()
+        
         
     # ----------IDA*搜索正确性测试----------
     # for idx, start_state in enumerate(difficult_cases):
@@ -109,6 +116,6 @@ def random_test():
         out_file(file, start_state, solution, duration, peak_mem)
 
 if __name__ == "__main__":
-    # easy_test()
+    easy_test()
     difficult_test()
     # random_test()

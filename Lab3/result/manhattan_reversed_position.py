@@ -10,7 +10,7 @@ manhattan_time = [0.002, 0.0005, 12.6959, 82.1854, 791.9662, 3397.9407]
 manhattan_mem = [98.62, 9.86, 379883.74, 1998566.01, 13360956.74, 27561181.09]
 
 # Manhattan+反转启发式数据（假设所有数据均完整）
-manhattan_rev_time = [0.0027, 0.0005, 13.4649, 74.7587, 764.9172, 2439.8853]
+manhattan_rev_time = [0.0027, 0.0005, 13.4649, 74.7587, 764.9172, 1864.7039]
 manhattan_rev_mem = [98.68, 9.86, 272561.03, 1606712.52, 12083791.30, 24093703.96]
 
 # 创建画布和子图
@@ -62,4 +62,4 @@ ax2.legend(loc='upper left', fontsize=12)
 plt.suptitle('Heuristic Function Performance Comparison', y=1.02, fontsize=16, weight='bold')
 plt.tight_layout()
 plt.savefig("heuristic_comparison.png", bbox_inches='tight', dpi=300)
-plt.show()
+# plt.show()
