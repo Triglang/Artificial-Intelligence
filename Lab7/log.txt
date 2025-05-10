@@ -36,3 +36,79 @@ python .\train.py \
     ----save-path softmax/best_model.pt \
     ----loss-img softmax/loss.png
 
+❌ Failed Command:
+python .\train.py \
+    ----input-dim 784 \
+    ----hidden-dim 128 \
+    ----out-dim 10 \
+    ----num-layer 4 \
+    ----activation sigmoid \
+    ----data-path ./data/mnist_jpg \
+    ----batch-size 32 \
+    ----dropout 0.1 \
+    ----device cpu \
+    ----optimizer sgd \
+    ----lr 0.01 \
+    ----epoch 400 \
+    ----patience 20 \
+    ----log-file batch_size32/log.txt \
+    ----save-path batch_size32/best_model.pt \
+    ----loss-img batch_size32/loss.png
+
+❌ Failed Command:
+python .\train.py \
+    ----input-dim 784 \
+    ----hidden-dim 128 \
+    ----out-dim 10 \
+    ----num-layer 4 \
+    ----activation sigmoid \
+    ----data-path ./data/mnist_jpg \
+    ----batch-size 64 \
+    ----dropout 0.1 \
+    ----device cpu \
+    ----optimizer sgd \
+    ----lr 0.01 \
+    ----epoch 400 \
+    ----patience 20 \
+    ----log-file batch_size64/log.txt \
+    ----save-path batch_size64/best_model.pt \
+    ----loss-img batch_size64/loss.png
+
+❌ Failed Command:
+python .\train.py \
+    ----input-dim 784 \
+    ----hidden-dim 128 \
+    ----out-dim 10 \
+    ----num-layer 4 \
+    ----activation sigmoid \
+    ----data-path ./data/mnist_jpg \
+    ----batch-size 128 \
+    ----dropout 0.1 \
+    ----device cpu \
+    ----optimizer sgd \
+    ----lr 0.01 \
+    ----epoch 400 \
+    ----patience 20 \
+    ----log-file batch_size128/log.txt \
+    ----save-path batch_size128/best_model.pt \
+    ----loss-img batch_size128/loss.png
+
+❌ Failed Command:
+python .\train.py \
+    ----input-dim 784 \
+    ----hidden-dim 128 \
+    ----out-dim 10 \
+    ----num-layer 4 \
+    ----activation sigmoid \
+    ----data-path ./data/mnist_jpg \
+    ----batch-size 256 \
+    ----dropout 0.1 \
+    ----device cpu \
+    ----optimizer sgd \
+    ----lr 0.01 \
+    ----epoch 400 \
+    ----patience 20 \
+    ----log-file batch_size256/log.txt \
+    ----save-path batch_size256/best_model.pt \
+    ----loss-img batch_size256/loss.png
+

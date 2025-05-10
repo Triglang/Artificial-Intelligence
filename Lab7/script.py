@@ -219,9 +219,34 @@ if __name__ == "__main__":
     #         "loss_img": loss_img
     #     })
     
-    # 遍历 dropout
-    for dr in dropout:
-        dir = f'dropout{dr}'
+    # # 遍历 dropout
+    # for dr in dropout:
+    #     dir = f'dropout{dr}'
+    #     log_file = dir + "/log.txt"
+    #     save_path = dir + "/best_model.pt"
+    #     loss_img = dir + "/loss.png"
+    #     experiments.append({
+    #         "input_dim": input_dim,
+    #         "hidden_dim": 128,
+    #         "out_dim": out_dim,
+    #         "num_layer": 4,
+    #         "activation": "relu",
+    #         "data_path": data_path,
+    #         "batch_size": batch_size,
+    #         "dropout": dr,
+    #         "device": device,
+    #         "optimizer": "sgd",
+    #         "lr": 0.01,
+    #         "epoch": 400,
+    #         "patience": patience,
+    #         "log_file": log_file,
+    #         "save_path": save_path,
+    #         "loss_img": loss_img
+    #     })
+    
+    # 遍历 batch_size
+    for bs in [32, 64, 128, 256]:
+        dir = f'batch_size{bs}'
         log_file = dir + "/log.txt"
         save_path = dir + "/best_model.pt"
         loss_img = dir + "/loss.png"
@@ -230,10 +255,10 @@ if __name__ == "__main__":
             "hidden_dim": 128,
             "out_dim": out_dim,
             "num_layer": 4,
-            "activation": "relu",
+            "activation": "sigmoid",
             "data_path": data_path,
-            "batch_size": batch_size,
-            "dropout": dr,
+            "batch_size": bs,
+            "dropout": 0.1,
             "device": device,
             "optimizer": "sgd",
             "lr": 0.01,
