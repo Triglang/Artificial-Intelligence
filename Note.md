@@ -697,9 +697,389 @@ A*搜索和宽度优先搜索或一致代价搜索一样，也存在潜在的空
 
 对神经元模型的图进行简化：将求和函数 sum 与激活函数 sign 合并到一个圆圈里，代表神经元的内部计算。此时，一个“节点”就是一个神经元。
 
-![image-20250509155748102](Note_img/image-20250509155748102.png)
+<img src="Note_img/image-20250509155748102.png" alt="image-20250509155748102" style="zoom:50%;" />
 
 1943年发布的MP模型，虽然简单，但已经建立了神经网络大厦的地基。然而，MP模型中，权重的值都是预先设置的，因此不能进行学习。
 
-### 多层感知机
+### MLP 模型
+
+#### 感知机模型
+
+感知机：两层神经元构成
+
+* 输入层：在 MP 模型的输入位置添加神经元节点，只传输数据，不做计算
+* 输出层：对前面一层的输入进行计算
+
+感知机模型数学化：
+
+- 输入向量 $\mathbf x = [x_1, x_2, x_3]^T $，输出向量 $\mathbf z = [z_1, z_2]^T $，系数矩阵 $ W \in \mathbb{R}^{2 \times 3} $
+  $$
+  z_1 = g(x_1 w_{1,1} + x_2 w_{1,2} + x_3 w_{1,3}) \\
+  z_2 = g(x_1 w_{2,1} + x_2 w_{2,2} + x_3 w_{2,3})
+  $$
+
+- 则用矩阵乘法表达感知机的计算公式为：$\mathbf z = g(W \cdot x) $
+
+<img src="Note_img/image-20250510161709170.png" alt="image-20250510161709170" style="zoom:50%;" />
+
+感知机的权重通过训练获得：
+$$
+\text{对于所有} y \ne \hat y \text{ : } \min_{\mathbf w} - \sum y (\mathbf w \cdot \mathbf x) \\
+\hat y = sign(\mathbf w \cdot \mathbf x)
+$$
+
+* $\mathbf w$ 是系数矩阵的一行（通俗讲就是：$\mathbf w$ 某一个输出神经元的所有权重）
+
+  <img src="Note_img/image-20250510165823325.png" alt="image-20250510165823325" style="zoom:50%;" />
+
+* $y \ne \hat y$ 代表只需考虑预测错误的的输出神经元
+
+* 对于任一  $y \ne \hat y  \text{, } | \mathbf w \cdot \mathbf x |$ 是该错误输出值相较于正确输出值的误差。而：
+  $$
+  |\mathbf w \cdot \mathbf x| = - y (\mathbf w \cdot \mathbf x)
+  $$
+
+  * 当 $y = +1, \mathbf w \cdot \mathbf x < 0, - y (\mathbf w \cdot \mathbf x) = |\mathbf w \cdot \mathbf x|$
+  * 当 $y = -1, \mathbf w \cdot \mathbf x > 0, - y (\mathbf w \cdot \mathbf x) = |\mathbf w \cdot \mathbf x|$
+
+* 感知机的训练就是让误差变得尽可能小。而这里的误差变小可以视作：
+
+  * 若真实值为 $+1$，$\mathbf w$ 和 $\mathbf x$ 的角度尽可能小（钝角的角度变小）
+  * 若真是值为 $-1$，$\mathbf w$ 和 $\mathbf x$ 的角度尽可能大（锐角的角度变大）
+
+因此感知机训练法制：
+$$
+W_t \leftarrow W_t + \Delta W_t \\
+\Delta W_t = \eta y \mathbf x
+$$
+
+- $ y $：真实的目标
+- $ \hat{y} $：感知机的输出
+- $ \eta $：学习速率（如 0.1）
+- $ x $：训练数据
+
+<img src="Note_img/image-20250510164925232.png" alt="image-20250510164925232" style="zoom:50%;" />
+
+感知机模型的数学几何意义：感知机模型可以试做 $n$ 维空间的决策超平面。
+
+* 对系数矩阵 $W$，该超平面就是 $W \mathbf x = 0$
+
+感知机模型的缺陷：只适用于线性分类任务。
+
+#### 多层感知机（MLP）
+
+多层感知机包含三个层次：一个输入层，一个或多个中间层 (也叫隐藏层，hidden layer) 和一个输出层。输入层与输出层的节点数是固定的，中间层则可以自由指定。
+
+![image-20250510171543280](Note_img/image-20250510171543280.png)
+
+MLP 数学化表达：使用向量和矩阵来表示神经网络中的变量。$ x, a, z $ 是网络中传输的向量数据。$ W_1 $ 和 $ W_2 $ 是网络的矩阵参数。MLP通常还会引入偏置单元，它与后一层的所有节点都有连接。
+
+<img src="Note_img/image-20250510171919527.png" alt="image-20250510171919527" style="zoom: 33%;" />
+
+MLP 模型的数学几何意义：
+
+* 对于两层神经网络，系数矩阵 $W_1$ 和 $W_2$ 的复合会形成一个光滑的曲线（这实际上也是只能做线性分类问题，只不过从平面变成了曲面）。
+
+  <img src="Note_img/image-20250510172318153.png" alt="image-20250510172318153" style="zoom:50%;" />
+
+* 关键在于:  从输入层到隐藏层时，数据在激活函数作用下发生了空间扭曲（这使得数据的原始坐标空间从线性不可分，转换成了线性可分）
+
+  <img src="Note_img/image-20250510172443385.png" alt="image-20250510172443385" style="zoom:60%;" />
+
+训练多层感知机：
+
+* 前向传播：计算当前参数下的误差。
+
+  * 按顺序（从输入层到输出层）计算和存储神经网络中每层的结果。
+
+  * 每次计算，都需要经过线性加权求和、激活函数激活两个步骤。
+
+    ![image-20250510173448382](Note_img/image-20250510173448382.png)
+
+* 梯度下降：沿着梯度下降的方向更新参数，使得误差最小。
+
+  每次计算参数在当前的梯度，然后让参数向着梯度的反方向前进一段距离，不断重复，直到梯度接近零时截止。一般这个时候，所有的参数恰好达到使损失函数达到一个最低值的状态。
+
+  <img src="Note_img/image-20250510174245125.png" alt="image-20250510174245125" style="zoom: 33%;" />
+
+  求导示例：一个具有两个输入、两个隐藏神经元和两个输出神经元的神经网络。考虑 $w_5$，探究 $w_5$ 的变化对总误差的影响有多大
+
+  <img src="Note_img/image-20250510174734161.png" alt="image-20250510174734161" style="zoom: 33%;" />
+
+  * 损失函数：
+    $$
+    E_{total} = \sum \frac{1}{2} (target_i - out_{oi})^2 \\[4pt]
+    $$
+    $$
+    \begin{aligned}
+    \frac{\partial E_{total}}{\partial out_{o1}} &= 2 * \frac{1}{2} (target_{o1} - out_{o1})^{2-1} * (-1) + 0 \\[2pt]
+    &= - (target_{o1} - out_{o1}) \\[5pt]
+    &= - (0.01 - 0.751365507) = 0.741365507 \\[5pt]
+    \end{aligned}
+    $$
+
+  * 激活函数：
+    $$
+    \begin{aligned}
+    out_{o1} = \frac{1}{1 + e^{-net_{o1}}} \\[4pt]
+    \end{aligned}
+    $$
+    $$
+    \begin{aligned}
+    \frac{\partial out_{o1}}{\partial net_{o1}} &= out_{o1}(1 - out_{o1}) = 0.186815602\\[5pt]
+    \end{aligned}
+    $$
+
+  * 线性求和：
+    $$
+    net_{o1} &= w_5 * h_1 + w_6 * h_2 + b_2 * 1 \\[6pt]
+    $$
+    $$
+    \begin{aligned}
+    \frac{\partial net_{o1}}{\partial w_5} &= 1 * h_1 * w_5^{(1-1)} + 0 + 0 \\
+    &= h_1 = 0.5932699992 \\
+    \end{aligned}
+    $$
+
+  * 参数更新：
+    $$
+    \text{设置学习率 } \eta = 0.5
+    $$
+    $$
+    \begin{aligned}
+    w_5^+ &= w_5 - \eta * \frac{\partial E_{total}}{\partial w_5} \\
+    &= 0.4 - 0.5 * 0.082167041 \\[3pt]
+    &= 0.35891648
+    \end{aligned}
+    $$
+
+
+  继续反向传播 $w_1$：
+
+  <img src="Note_img/image-20250511000903763.png" alt="image-20250511000903763" style="zoom:50%;" />
+
+  <img src="Note_img/image-20250511001226597.png" alt="image-20250511001226597" style="zoom:50%;" />
+
+  <img src="Note_img/image-20250511001303585.png" alt="image-20250511001303585" style="zoom:50%;" />
+
+* 反向传播：根据误差调整参数
+
+  反向传播算法不一次计算所有参数的梯度，而是从后往前。首先计算输出层的梯度，然后是第二个参数矩阵的梯度，接着是中间层的梯度，再然后是第一个参数矩阵的梯度，最后是输入层的梯度。计算结束以后，所要的两个参数矩阵的梯度就都有了。
+
+MLP 缺陷：
+
+1. 非凸模型优化问题存在局部最优解问题
+
+2. 梯度衰减问题
+
+   <img src="Note_img/image-20250511001605360.png" alt="image-20250511001605360" style="zoom: 50%;" />
+
+   以 sigmoid 函数为例，$\sigma (x) = \frac{1}{1 + e^{-x}}$，而 $0 \le \frac{d}{dx} \sigma(x) = \sigma (x) \big(1 - \sigma (x)\big) \le 0.25$。在神经网络反向传播梯度时，每传递一层梯度衰减为原来的 0.25。层数一多，梯度指数衰减后低层基本上接受不到有效的训练信号。
+
+激活函数：
+
+1. **sigmoid**
+
+   数学表达式为：
+   $$
+   sigmoid(x) = \frac{1}{1 + e^{-x}}
+   $$
+   求导表达式为：
+   $$
+   \frac{d(sigmoid(x))}{dx} = sigmoid(x)(1 - sigmoid(x))
+   $$
+   函数图像为
+
+   ![image-20250511002658927](Note_img/image-20250511002658927.png)
+
+2. **Tanh**
+
+   数学表达式为：
+   $$
+   Tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}
+   $$
+   函数图像如下：
+
+   ![image-20250511002713085](Note_img/image-20250511002713085.png)
+
+3. **ReLU**
+
+   数学表达式为：
+   $$
+   ReLU(x) = max(0, x)
+   $$
+   函数图像如下：
+
+   ![image-20250511002720796](Note_img/image-20250511002720796.png)
+
+   Relu会使部分神经元的输出为0，造成了网络的稀疏性，减少了参数的相互依存关系，缓解过拟合问题的发生
+
+4. **Softmax**
+
+   数学表达式为：
+   $$
+   Softmax(x) = \frac{e^{x_i}}{\sum_i e^{x_i}}
+   $$
+   函数图像如下：
+
+   ![image-20250511002728606](Note_img/image-20250511002728606.png)
+
+损失函数：
+
+1. **均方误差（MSE）**
+   $$
+   MSE = \frac{1}{n} \sum_{i=1}^{n}(y_i - \hat y_i)
+   $$
+
+2. **交叉熵（LCE）**
+   $$
+   LCE = -\sum_i^n \sum_j^k y_j^{(i)} \log {\hat y_j^{(i)}}
+   $$
+
+   * $y_j^{(i)}$ 是第 $j$ 个输入参数在第 $i$ 个输出的真实值。
+   * $\hat y_j^{(i)}$ 是第 $j$ 个输入参数在第 $i$ 个输出的预测值。
+
+分类任务评测指标：
+
+1. **类别级指标**
+
+   - **precision（精确率）**：预测为某类的样本中实际属于该类的比例。
+
+     计算公式：
+     $$
+     Precision = \frac{TP}{TP + FP} \\
+     $$
+
+     * **TP (True Positive)**：正确预测为正类的样本数（预测为A类，实际也是A类）
+     * **FP (False Positive)**：错误预测为正类的样本数（预测为A类，实际是其他类）
+     * $TP + FP$：预测为正类的总预测数
+
+   - **recall（召回率）**：实际属于某类的样本中被正确预测的比例。
+
+     计算公式：
+     $$
+     Recall = \frac{TP}{TP + FN}
+     $$
+
+     * **TP (True Positive)**：正确预测为正类的样本数（预测为A类，实际也是A类）
+     * **FN (False Negative)**：错误预测为负类的样本数（实际是A类，但被预测为其他类）
+
+   - **f1-score**：精确率和召回率的调和平均，综合反映分类质量。
+
+     计算公式：
+     $$
+     F1 = 2 \times \frac{Precision \times Recall}{Precision + Recall}
+     $$
+
+2. **全局指标**
+
+   - **accuracy**：整体正确分类比例
+
+     计算公式：
+     $$
+     Accuracy = \frac{正确预测的样本数}{总样本数}
+     $$
+
+   - **macro avg**：各类别指标的算术平均
+
+   - **weighted avg**：按样本量加权的平均指标
+
+   由于各类指标同等重要，因此我们选择 accuracy 来作为性能的评价指标。
+
+神经网络的过拟合：
+
+<img src="Note_img/image-20250511003125943.png" alt="image-20250511003125943" style="zoom:33%;" />
+
+## 深度学习
+
+### 卷积神经网络
+
+基于视觉机理的卷积神经网络：
+
+1. 局部特征影响大
+
+   <img src="Note_img/image-20250512092336439.png" alt="image-20250512092336439"  />
+
+2. 重要位置常变化
+
+   <img src="Note_img/image-20250512092415328.png" alt="image-20250512092415328" style="zoom:150%;" />
+
+3. 采样压缩也没差
+
+   <img src="Note_img/image-20250512092503611.png" alt="image-20250512092503611" style="zoom: 70%;" />
+
+卷积核：一个小型的权重矩阵，其数值通过训练自动学习得到。
+
+* 在输入数据上滑动，逐位置进行点乘求和运算，生成特征图。
+
+  <img src="Note_img/image-20250512092807416.png" alt="image-20250512092807416" style="zoom: 67%;" />
+
+特征图维度：
+$$
+高度~ h = \lfloor \frac{n_h - f + 2p}{s} + 1 \rfloor \\
+宽度~ w = \lfloor \frac{n_w - f + 2p}{s} + 1 \rfloor \\
+深度~ k = K
+$$
+
+* $n_h$：输入图片的高度
+
+* $n_w$：输入图片的宽度
+
+* $K$：卷积核个数
+
+  <img src="Note_img/image-20250512102717326.png" alt="image-20250512102717326" style="zoom:67%;" />
+
+池化：
+
+* 池化操作都有一个固定的窗口，可以称为池化窗口，类似与卷积操作中的卷积核，表示选取的数据范围。
+
+* 最大池化：每次选取移动框内数的最大值
+
+  <img src="Note_img/9a4237da2270164ba32259ec9696d81f.gif" alt="img" style="zoom: 67%;" />
+
+* 池化的作用：有效的缩小参数矩阵的尺寸，从而减少最后连接层的中的参数数量，加快计算速度和防止过拟合。
+
+卷积核的优势：
+
+1. 可以识别局部特征
+2. 可以识别不同区域的相似特征
+2. 减少参数量
+2. 共享权重
+
+### 循环神经网络
+
+独热码：用向量表示单词
+
+* 示例：
+  $$
+  \text{词典} = \{apple, bag, cat, dog, elephant\} \\
+  
+  \begin{align*}
+  apple &= [1 \ 0 \ 0 \ 0 \ 0] \\
+  bag &= [0 \ 1 \ 0 \ 0 \ 0] \\
+  cat &= [0 \ 0 \ 1 \ 0 \ 0] \\
+  dog &= [0 \ 0 \ 0 \ 1 \ 0] \\
+  elephant &= [0 \ 0 \ 0 \ 0 \ 1]
+  \end{align*}
+  $$
+
+循环神经网络结构：
+
+<img src="Note_img/a226d9719e4d40169f0a9acd037ceb3e.jpeg" alt="img"  />
+
+### 长短期记忆网络
+
+LSTM 网络结构：
+
+<img src="Note_img/image-20250512111631640.png" alt="image-20250512111631640" style="zoom:33%;" />
+
+* $c^{'} = g(z)f(z_i) + cf(z_i)$
+
+LSTM 不易学习，误差表面相当粗糙：
+
+<img src="Note_img/image-20250512111837073.png" alt="image-20250512111837073" style="zoom:50%;" />
+
+* 原因：
+
+  <img src="Note_img/image-20250512112122111.png" alt="image-20250512112122111" style="zoom: 33%;" />
 

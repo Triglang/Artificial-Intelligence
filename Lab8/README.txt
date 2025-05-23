@@ -1,0 +1,1 @@
+mnist2.py针对mnist数据集， tcm6.py针对中草药数据集，运行时注意data的放置路径~
