@@ -468,7 +468,7 @@ $$
 
 ##### 用A解决八数码问题
 
-![image-20250606211847746](C:\Users\19912\Desktop\Artificial-Intelligence\Note.assets\image-20250606211847746.png)
+![image-20250606211847746](Note_img/image-20250606211847746.png)
 
 明确：
 
