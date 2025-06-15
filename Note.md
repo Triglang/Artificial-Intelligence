@@ -1272,9 +1272,63 @@ MLP 缺陷：
 
 #### CLS 算法
 
+没有规定采用何种测试属性以及测试属性先后的朴素方法
+
+实践表明，测试属性集的组成以及测试属性的先后对决策树的学习具有举足轻重的影响
+
 #### ID3 算法
 
+引入 **熵** 用来衡量离散变量的不确定性，选择条件熵最小的作为下一个属性
 
+熵的计算公式为
+$$
+H(X) = -\sum_{i=1}^{n} p_i \log_2 p_i
+$$
+条件熵
+$$
+H(Y|X) = -\sum_{i=1}^{n} p_i \sum_{j=1}^{m} p_{ij} \log_2 p_{ij}
+$$
+注意，内层求和是在 每个属性下的多种属性值 为范围的
+
+而$H(Y)$是以整个数据集的类别分布为范围的
+
+条件熵越小，等价于信息增益越大，优先选出作为根节点
+
+解释：**用一个属性分割数据的目标是让不确定性（熵）下降**，也就是让数据变得更“纯净”（同一类别占比更高）
+
+**互信息**：衡量两个离散随机变量之间的相关性，类似于方差
+$$
+Gain(D,G) = I(X;Y) = H(X) - H(X|Y)
+$$
+
+#### C4.5 算法
+
+信息增益（Information gain）的衡量容易偏向那些有大量值的属性
+
+因此做一个改进，使用增益率来克服问题
+
+增益率的计算公式为：
+$$
+GainRatio(X, Y) = \frac{I(X;Y)}{H(Y)}
+$$
+
+
+#### CART 算法
+
+Gini系数
+
+Gini系数是一个衡量数据集纯度的指标，值越小表示数据集越纯净，表示这个标准的不确定成都越小
+
+CART算法使用Gini系数来选择最佳分割属性。
+
+Gini系数的计算公式为：
+$$
+Gini(D) = 1 - \sum_{i=1}^{n} p_i^2
+$$
+
+选择==基尼系数最小==的那个标准来作为下一个分裂的标准
+
+![image-20250614192647526](C:\Users\19912\Desktop\Artificial-Intelligence\Note.assets\image-20250614192647526.png)
 
 ## 深度学习
 
@@ -1353,13 +1407,41 @@ $$
 
 <img src="Note_img/a226d9719e4d40169f0a9acd037ceb3e.jpeg" alt="img"  />
 
+过去的值会在延迟器中停留，从而使得当前的输出不仅依赖于当前的输入，还依赖于过去的输入。
+
+上图的这种形式需要两次输入，其实我们可以让延时器的输出接到另一个分支上，这样就可以实现一次输入。
+
+<img src="C:\Users\19912\Desktop\Artificial-Intelligence\Note.assets\image-20250614202920640.png" alt="image-20250614202920640" style="zoom: 33%;" />
+
+可以展开更多（权重是共享的）
+
+<img src="C:\Users\19912\Desktop\Artificial-Intelligence\Note.assets\image-20250614203043334.png" alt="image-20250614203043334" style="zoom:50%;" />
+
+由于参数一直在传递，可能会产生梯度爆炸和梯度消失的问题
+
+串行，不易加速
+
 ### 长短期记忆网络
+
+路径独立，解决梯度爆炸和消失问题
+
+<img src="C:\Users\19912\Desktop\Artificial-Intelligence\Note.assets\image-20250614203856417.png" alt="image-20250614203856417" style="zoom:50%;" />
 
 LSTM 网络结构：
 
 <img src="Note_img/image-20250512111631640.png" alt="image-20250512111631640" style="zoom:33%;" />
 
 * $c^{'} = g(z)f(z_i) + cf(z_i)$
+
+这里的几个门的输入都是由input通过一定的权重矩阵产生的
+
+门用01相乘来决定：
+
+1. 要不要把当前输入 $z$ 加入到记忆单元（长短期）中
+2. 要不要重置记忆(forget)
+3. 要不要把记忆单元中的内容传递到输出中
+
+<img src="C:\Users\19912\Desktop\Artificial-Intelligence\Note.assets\image-20250614210024081.png" alt="image-20250614210024081" style="zoom: 50%;" />
 
 LSTM 不易学习，误差表面相当粗糙：
 
