@@ -1,0 +1,11 @@
+filename,true_label,pred_label,correct
+baihe01.jpg,0,0,True
+baihe02.jpg,0,0,True
+dangshen01.jpg,1,1,True
+dangshen02.jpg,1,1,True
+gouqi01.jpg,2,2,True
+gouqi02.jpg,2,2,True
+huaihua01.jpg,3,4,False
+huaihua02.jpg,3,4,False
+jinyinhua01.jpg,4,4,True
+jinyinhua02.jpg,4,4,True
