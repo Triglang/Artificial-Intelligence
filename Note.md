@@ -155,7 +155,7 @@
       \forall x \Big( \exists y \neg P(x, y) \vee \exists z \big( Q(x, z) \wedge \neg R(x, z) \big) \Big) \tag{3}
       $$
 
-   4. 消去存在量词
+   4. **==消去存在量词==**
 
       分两种情况：
       $$
@@ -200,17 +200,17 @@
 
 10. 利用归结推理**==求解问题==**的具体步骤：
 
-   1. 已知前提 $ F $ 用谓词公式表示，并化为子句集 $ S $；
+    1. 已知前提 $ F $ 用谓词公式表示，并化为子句集 $ S $；
 
-   2. 把待求解的问题 $ P $ 用谓词公式表示，并否定 $ P $，再与 $ answer $ 构成析取式 $ (\neg P \lor answer) $；
+    2. 把待求解的问题 $ P $ 用谓词公式表示，并否定 $ P $，再与 $ answer $ 构成析取式 $ (\neg P \lor answer) $；
 
-   3. 把 $ (\neg P \lor answer) $ 化为子句集，并入到子句集 $ S $ 中，得到子句集 $ S' $；
+    3. 把 $ (\neg P \lor answer) $ 化为子句集，并入到子句集 $ S $ 中，得到子句集 $ S' $；
 
-   4. 对 $ S' $ 应用归结原理进行归结；
+    4. 对 $ S' $ 应用归结原理进行归结；
 
-   5. 若得到归结式 $ answer $，则答案就在 $ answer $ 中。
+    5. 若得到归结式 $ answer $，则答案就在 $ answer $ 中。
 
-10. 支持集策略：
+11. 支持集策略：
 
     - 每次归结时，两个亲本子句中至少要有一个是目标公式否定的子句或其后裔。
     - 支持集 = 目标公式否定的子句集合 $\cup$ 这些子句通过归结生成的所有后裔子句
@@ -1332,7 +1332,7 @@ $$
 
 选择==基尼系数最小==的那个标准来作为下一个分裂的标准
 
-![image-20250614192647526](C:\Users\19912\Desktop\Artificial-Intelligence\Note.assets\image-20250614192647526.png)
+![image-20250614192647526](Note.assets\image-20250614192647526.png)
 
 ## 深度学习
 
@@ -1415,11 +1415,11 @@ $$
 
 上图的这种形式需要两次输入，其实我们可以让延时器的输出接到另一个分支上，这样就可以实现一次输入。
 
-<img src="C:\Users\19912\Desktop\Artificial-Intelligence\Note.assets\image-20250614202920640.png" alt="image-20250614202920640" style="zoom: 33%;" />
+<img src="Note.assets\image-20250614202920640.png" alt="image-20250614202920640" style="zoom: 33%;" />
 
 可以展开更多（权重是共享的）
 
-<img src="C:\Users\19912\Desktop\Artificial-Intelligence\Note.assets\image-20250614203043334.png" alt="image-20250614203043334" style="zoom:50%;" />
+<img src="Note.assets\image-20250614203043334.png" alt="image-20250614203043334" style="zoom:50%;" />
 
 由于参数一直在传递，可能会产生梯度爆炸和梯度消失的问题
 
@@ -1429,7 +1429,7 @@ $$
 
 路径独立，解决梯度爆炸和消失问题
 
-<img src="C:\Users\19912\Desktop\Artificial-Intelligence\Note.assets\image-20250614203856417.png" alt="image-20250614203856417" style="zoom:50%;" />
+<img src="Note.assets\image-20250614203856417.png" alt="image-20250614203856417" style="zoom:50%;" />
 
 LSTM 网络结构：
 
@@ -1445,7 +1445,7 @@ LSTM 网络结构：
 2. 要不要重置记忆(forget)
 3. 要不要把记忆单元中的内容传递到输出中
 
-<img src="C:\Users\19912\Desktop\Artificial-Intelligence\Note.assets\image-20250614210024081.png" alt="image-20250614210024081" style="zoom: 50%;" />
+<img src="Note.assets\image-20250614210024081.png" alt="image-20250614210024081" style="zoom: 50%;" />
 
 LSTM 不易学习，误差表面相当粗糙：
 
@@ -1554,7 +1554,7 @@ $$
   Q_{\pi}(s, a) \triangleq \mathbb{E}_{\pi}[G_t | S_t = s, A_t = a]
   $$
   
-- **==二者关系与计算==**：
+- 二者关系与计算：
   $$
   V_{\pi}(s) = \sum_{a \in A} \pi(a|s) Q_{\pi}(s, a) \\
   Q_{\pi}(s, a) = R^a_s + \gamma \sum_{s' \in \mathcal{S}} p^a_{ss'} V_{\pi}(s')
@@ -1617,8 +1617,6 @@ $$
 
 ### 表格型强化学习
 
-Q 表
-
 #### 动态规划算法
 
 1. 策略评估：评估给定的策略 $\pi$
@@ -1654,6 +1652,19 @@ Q 表
 
 #### 蒙特卡洛估计方法
 
+蒙特卡洛方法通过大量采用去更新状态价值 V 和 动作价值 Q
+
+优点
+
+- 无需环境模型，只需与环境交互采样样本数据即可学习策略
+
+缺点
+
+- 若采样的回合个数不够多，容易收敛到次优策略
+- 由于需要多个回合的回报，通常只适用有限步长的场景
+
+****
+
 1. 策略评估：
    $$
    G^{(i)(j)}(s)\text{ ：第 $ i $ 个回合中第 $ j $ 次访问状态 $ s $ 对应的累积回报} \newline
@@ -1670,4 +1681,146 @@ Q 表
      Q_{\pi}(s, a) = \mathbb{E}_{\pi}[G_t|S_t = s, A_t = a] \approx \frac{1}{N} \sum_{i=1}^{N} G^{(i)(j)}(s, a)
      $$
 
-     
+2. 策略提升：选择一个动作，使得它的动作价值函数最大
+
+   - **已经估计了状态价值函数** $ V_N(s) $，策略提升部分为：
+     $$
+     \arg\max_{\pi} [R(s, a) + \gamma \sum_{s'} p(s'|s, a) V_N(s')]
+     $$
+
+   - **已经估计了动作价值函数** $ Q_N(s, a) $，策略提升部分为：
+     $$
+     \arg\max_{\pi} Q_N(s, a)
+     $$
+
+3. $\epsilon$-贪心策略：
+
+   ![image-20250616175246359](Note_img/image-20250616175246359.png)
+   $$
+   \pi(a|s) = 
+   \begin{cases} 
+   \epsilon / |\mathcal{A}| + 1 - \epsilon & \text{if } a = \arg\max_{a \in \mathcal{A}} Q_N(s, a) \\
+   \epsilon / |\mathcal{A}| & \text{otherwise}
+   \end{cases}
+   $$
+
+   * $ |\mathcal{A}| $ 为状态 $ s $ 下，可以采取的动作总数
+   * $\epsilon$ 是一个人为规定值
+     * $ \epsilon = 0 $ 时，纯贪心；$ \epsilon = 1 $ 时，纯随机
+
+   对于任意策略 $\pi$，依据其动作价值函数 $Q_{\pi}$ 计算的 $\epsilon$-贪心策略 $\pi'$ 比原策略 $\pi$ 好或至少一样好
+
+#### 时序差分方法
+
+1. 时序差分方法：
+   $$
+   V(S_t) \leftarrow V(S_t) + \alpha (\underbrace{\overbrace{R_t + \gamma V(S_{t+1})}^{TD 目标} - V(S_t)}_{ TD 误差})
+   $$
+
+   > 推导过程：
+   >
+   > 根据损失函数：
+   > $$
+   > \frac{1}{2}(V(S_t) - (R_t + \gamma V(S_{t+1})))^2
+   > $$
+   >
+   > * $ V(S_t) $：预测值
+   > * $ (R_t + \gamma V(S_{t+1})) $：真实值
+   >
+   > 使用梯度下降法得：
+   > $$
+   > V(S_t) \leftarrow V(S_t) + \alpha (G_t - V(S_t))
+   > $$
+   > 又因为：
+   > $$
+   > G_t = R_t + \gamma R_{t+1} + \ldots + \gamma^T R_{t+T} = R_t + \gamma (R_{t+1} + \gamma R_{t+2} + \ldots) \approx R_t + \gamma V(S_{t+1})
+   > $$
+   > 从而：$G_t \approx R_t + \gamma V(S_{t+1})$，得到结论
+
+2. 例题：计算状态价值函数
+
+   <img src="Note_img/image-20250616195723333.png" alt="image-20250616195723333" style="zoom:67%;" />
+
+   问题描述：有两个状态 A、B；不考虑折扣（$\gamma = 1$）
+
+   已知：现有如下 8 条轨迹，其中每条轨迹中状态后的数值是从该状态开始得到的回报：
+
+   - $ (A, 0, B, 0), (B, 1), (B, 1), (B, 1), (B, 1), (B, 1), (B, 1), (B, 0) $
+
+   解答：
+
+   首先根据蒙特卡洛算初始值：
+   $$
+   V(A) = 0
+   \\ V(B) = 6/8 = 0.75
+   $$
+   然后用时序差分计算 $A$ 的状态价值：
+   $$
+   V(A) \leftarrow V(A) + \alpha (R_t + \gamma V(B) - V(A))
+   $$
+   根据图片中的内容，$R_t$ 也为 0。设 $\alpha = 1$，则
+   $$
+   V(A) \leftarrow 0 + 1 \times (0 + 1 \times 0.75 - 0))
+   $$
+   解得 $V(A) = 0.75$
+
+3. SARSA 算法：使用 TD 方法作为策略迭代中的策略评估方法
+   $$
+   Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha (R_t + \gamma Q(S_{t+1}, A_{t+1}) - Q(S_t, A_t))
+   $$
+   策略迭代两步走：
+
+   - 策略评估：使用上式估计动作价值函数 $ Q = q_{\pi} $
+   - 策略提升：使用 $\epsilon$-greedy 策略提升方法
+
+   <img src="Note_img/image-20250616200447580.png" alt="image-20250616200447580" style="zoom: 150%;" />
+
+   伪代码
+
+   <img src="Note_img/image-20250616211000269.png" alt="image-20250616211000269" style="zoom:67%;" />
+
+4. Q-learning 算法：
+   $$
+   Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha (R_t + \gamma \max_{a'} Q(S_{t+1}, a') - Q(S_t, A_t))
+   $$
+   当给定 $ S_t $ 和 $ A_t $ 后，$ R_t $ 与 $ S_{t+1} $ 仅由环境决定，而与所采取的策略无关。
+
+   * 意思是，我们通过某个策略采集样本，这个策略与目标策略不一样（如目标策略为贪心策略，采样策略为 $ \epsilon $-greedy 策略）。得到 $ <S_t, A_t, R_t, S_{t+1}> $ 后，可直接以 $ R_t + \gamma \max_{a'} Q(S_{t+1}, a') $ 作为目标更新贪婪策略 $ \pi $ 的动作价值函数 $ Q_{\pi}(S_t, A_t) $
+
+   伪代码：
+
+   <img src="Note_img/image-20250616210640747.png" alt="image-20250616210640747" style="zoom:67%;" />
+
+5. 同策略和异策略
+
+   同策略详解：使用当前正在优化的策略 $\pi$ 直接与环境交互生成数据，并用这些数据更新 $\pi$ 自身。
+
+   * 以 SARSA 为例：
+     $$
+     Q(s_t,a_t) \leftarrow Q(s_t,a_t) + \alpha \Big[ \underbrace{r_t + \gamma Q(s_{t+1}, \textcolor{red}{a_{t+1}})}_{\text{基于}\pi\text{选择的动作}} - Q(s_t,a_t) \Big]
+     $$
+     其中 $a_{t+1}$ 是从当前策略 $ \pi(\cdot|s_{t+1})$ 下获取的（如 $\epsilon$-greedy）
+
+   * 特点：  
+
+     * 策略更新依赖自身产生的数据
+     * 必须在线学习（不能复用旧数据）
+     * 探索与利用需平衡在同一个策略中
+
+   异策略详解：用行为策略 $ b $（如 $\epsilon$-greedy）生成数据，来优化目标策略 $ \pi $（如贪婪策略）
+
+   关键技术：重要性采样
+   $$
+   \mathbb{E}_{a\sim \pi}[f(a)] = \mathbb{E}_{a\sim b}\left[f(a)\frac{\pi(a|s)}{b(a|s)}\right]
+   $$
+   以 Q-learning 为例：
+   $$
+   Q(s_t,a_t) \leftarrow Q(s_t,a_t) + \alpha \Big[ r_t + \gamma \underbrace{\max_a Q(s_{t+1}, a)}_{\text{目标策略}\pi\text{的动作}} - Q(s_t,a_t) \Big]
+   $$
+   **==其中数据 $(s_t,a_t,r_t,s_{t+1})$ 由行为策略 $b$ 生成==**
+
+   * 特点：
+     * 解耦数据生成与策略优化
+     * 支持离线学习（经验回放）
+     * 可学习多来源数据（如人类示范）
+
