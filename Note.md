@@ -541,7 +541,7 @@ $h(n)$ 的一致性（单调性）：对于任意节点 $n_1$ 和 $n_2$，若 $h
 
 问题：对于一致代价搜索，使用环检测后是否具有最优性？
 
-答案：否，反例如上图（不看h即可）
+答案：是，一致代价搜索不考虑h，具有单调性，如下定理可知，具有最优性。
 
 若启发式函数具备单调性，就能在进行环检测之后仍然保持最优性
 
@@ -1811,14 +1811,14 @@ $$
 
    关键技术：重要性采样
    $$
-   \mathbb{E}_{a\sim \pi}[f(a)] = \mathbb{E}_{a\sim b}\left[f(a)\frac{\pi(a|s)}{b(a|s)}\right]
+   \mathbb{E}_{a\sim \pi}[f(a)] = \mathbb{E}_{a\sim b}\left[f(a)\frac{\pi(a|s)}{b(a|s)}\right]
    $$
    以 Q-learning 为例：
    $$
    Q(s_t,a_t) \leftarrow Q(s_t,a_t) + \alpha \Big[ r_t + \gamma \underbrace{\max_a Q(s_{t+1}, a)}_{\text{目标策略}\pi\text{的动作}} - Q(s_t,a_t) \Big]
    $$
    **==其中数据 $(s_t,a_t,r_t,s_{t+1})$ 由行为策略 $b$ 生成==**
-
+   
    * 特点：
      * 解耦数据生成与策略优化
      * 支持离线学习（经验回放）
